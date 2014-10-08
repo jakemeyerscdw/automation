@@ -1,4 +1,4 @@
-Cloud Provisioning and Configuration Management
+Cloud Provisioning & Configuration Management
 ==========
 
 Let's build some automation around the provisioning and configuration of cloud resources.   
