@@ -18,6 +18,7 @@ readonly BUILD_PLAN_NAME=build.tfplan
 
 # Globals could be overridden as command line arguments
 TERRAFORM_CONFIGS_DIR=/tf
+TERRAFORM_PLANS_DIR=${TERRAFORM_CONFIGS_DIR}/plans
 
 
 usage()
@@ -79,25 +80,27 @@ valid()
     echo -e "\e[0m"
     exit 1
   fi
+	
+  if [ ! -d "$TERRAFORM_PLANS_DIR"  ]; then
+    echo -e "\033[31mERROR: terraform directory \"$TERRAFORM_PLANS_DIR\" does not exist.  This directory is expected to use Terraform for provisioning."
+    echo -e "\e[0m"
+    exit 1
+  fi
 }
 
 
 planonly()
 {
-  cd $TERRAFORM_CONFIGS_DIR && $TERRFORM_CMD plan -out=$BUILD_PLAN_NAME
+  # cd /tf && terraform plan -state=/tf/plans/terraform.tfstate -refresh=true -backup=/tf/plans/terraform.tfstate.backup
+  cd $TERRAFORM_CONFIGS_DIR && $TERRFORM_CMD plan -state=$TERRAFORM_PLANS_DIR/terraform.tfstate -refresh=true -backup=$TERRAFORM_PLANS_DIR/terraform.tfstate.backup
 }
 
 
 provision()
 {
 	
-  if [ ! -f "$TERRAFORM_CONFIGS_DIR/$BUILD_PLAN_NAME"  ]; then
-    echo -e "\033[31mERROR: terraform plan \"$TERRAFORM_CONFIGS_DIR/$BUILD_PLAN_NAME\" does not exist.  Re-run this script with the -p flag to generate necessary plan file."
-    echo -e "\e[0m"
-    exit 1
-  fi
-
-  cd $TERRAFORM_CONFIGS_DIR && $TERRFORM_CMD apply $BUILD_PLAN_NAME
+  # cd /tf && terraform apply -state=/tf/plans/terraform.tfstate -refresh=true -backup=/tf/plans/terraform.tfstate.backup
+  cd $TERRAFORM_CONFIGS_DIR && $TERRFORM_CMD apply -state=$TERRAFORM_PLANS_DIR/terraform.tfstate -refresh=true -backup=$TERRAFORM_PLANS_DIR/terraform.tfstate.backup
 }
 
 main()

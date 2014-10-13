@@ -52,7 +52,7 @@ ONBUILD ADD tf /tf
 ONBUILD ADD ssh /root/.ssh
 ONBUILD RUN chmod 700 /root/.ssh
 
-ONBUILD RUN /usr/local/bin/build.sh --plan
+#ONBUILD RUN /usr/local/bin/build.sh --plan
 ONBUILD WORKDIR /tf
 
 CMD ["/bin/bash"]

@@ -5,8 +5,9 @@ ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 PROJECT_NAME := $(shell basename $(PWD))
 CREATE_DATE := $(shell date +%FT%T%Z)
 DOCKER_BIN := $(shell which docker)
+PROVISION_OUTPUT :=${PWD}/provisionstatus
 
-all: check_env echo_env build 
+all: check_env echo_env run 
 
 echo_env:
 	@echo Your root directory: $(ROOT_DIR)
@@ -39,39 +40,66 @@ prep_docker:
 	cp -pR terraform cloud_provision_base_image/tf
 	mkdir cloud_provision_base_image/ssh
 	cp -pR /home/pinter/.ssh/id_rsa* cloud_provision_base_image/ssh/
-	sed -i 's/### DIGITALOCEAN PAT ###/$(DO_PAT)/g' cloud_provision_base_image/tf/provider.tf 
-	sed -i 's/### SSH PRIVATE KEY ###/\/root\/.ssh\/id_rsa/g' cloud_provision_base_image/tf/www-1.tf 
-	sed -i 's/### SSH FINGERPRINT ###/$(CLOUD_SSH_FINGERPRINT)/g' cloud_provision_base_image/tf/www-1.tf 
+	sed -i 's/### DIGITALOCEAN PAT ###/$(DO_PAT)/g' cloud_provision_base_image/tf/*.tf 
+	sed -i 's/### SSH PRIVATE KEY ###/\/root\/.ssh\/id_rsa/g' cloud_provision_base_image/tf/*.tf 
+	sed -i 's/### SSH FINGERPRINT ###/$(CLOUD_SSH_FINGERPRINT)/g' cloud_provision_base_image/tf/*.tf 
 
 build: prep_docker
 	$(DOCKER_BIN) build -t $(NAME)/$(PROJECT_NAME):$(VERSION) cloud_provision_base_image 
 
-plan: 
+mkdirs: 
+	mkdir -p $(PROVISION_OUTPUT) 
+	
+run: build mkdirs
 	$(DOCKER_BIN) run \
 		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(PROVISION_OUTPUT):/tf/plans:rw \
 		-e "DO_PAT=$(DO_PAT)" \
 		-e "DNSIMPLE_EMAIL=$(DNSIMPLE_EMAIL)" \
 		-e "DNSIMPLE_API_KEY=$(DNSIMPLE_API_KEY)" \
 		-e "SSH_FINGERPRINT=$(CLOUD_SSH_FINGERPRINT)" \
-		-it $(NAME)/$(PROJECT_NAME):$(VERSION) build.sh --plan 
+		-it $(NAME)/$(PROJECT_NAME):$(VERSION) /bin/bash 
 
-provision:
+plan: mkdirs 
 	$(DOCKER_BIN) run \
 		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(PROVISION_OUTPUT):/tf/plans:rw \
 		-e "DO_PAT=$(DO_PAT)" \
 		-e "DNSIMPLE_EMAIL=$(DNSIMPLE_EMAIL)" \
 		-e "DNSIMPLE_API_KEY=$(DNSIMPLE_API_KEY)" \
 		-e "SSH_FINGERPRINT=$(CLOUD_SSH_FINGERPRINT)" \
-		-it $(NAME)/$(PROJECT_NAME):$(VERSION) build.sh 
+		-it $(NAME)/$(PROJECT_NAME):$(VERSION) terraform plan -state=/tf/plans/terraform.tfstate -refresh=true -backup=/tf/plans/terraform.tfstate.backup 
 
-teardown:
+provision: mkdirs
 	$(DOCKER_BIN) run \
 		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(PROVISION_OUTPUT):/tf/plans:rw \
+		-e "DO_PAT=$(DO_PAT)" \
+		-e "DNSIMPLE_EMAIL=$(DNSIMPLE_EMAIL)" \
+		-e "DNSIMPLE_API_KEY=$(DNSIMPLE_API_KEY)" \
+		-e "SSH_FINGERPRINT=$(CLOUD_SSH_FINGERPRINT)" \
+		-it $(NAME)/$(PROJECT_NAME):$(VERSION) terraform apply -state=/tf/plans/terraform.tfstate -refresh=true -backup=/tf/plans/terraform.tfstate.backup 
+
+ip: mkdirs
+	$(DOCKER_BIN) run \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(PROVISION_OUTPUT):/tf/plans:rw \
+		-e "DO_PAT=$(DO_PAT)" \
+		-e "DNSIMPLE_EMAIL=$(DNSIMPLE_EMAIL)" \
+		-e "DNSIMPLE_API_KEY=$(DNSIMPLE_API_KEY)" \
+		-e "SSH_FINGERPRINT=$(CLOUD_SSH_FINGERPRINT)" \
+		-it $(NAME)/$(PROJECT_NAME):$(VERSION) terraform output -state=/tf/plans/terraform.tfstate address
+
+destroy:
+	$(DOCKER_BIN) run \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v $(PROVISION_OUTPUT):/tf/plans:rw \
 		-e "DO_PAT=$(DO_PAT)" \
 		-e "DNSIMPLE_EMAIL=$(DNSIMPLE_EMAIL)" \
 		-e "DNSIMPLE_API_KEY=$(DNSIMPLE_API_KEY)" \
 		-e "SSH_FINGERPRINT=$(CLOUD_SSH_FINGERPRINT)" \
 		-it $(NAME)/$(PROJECT_NAME):$(VERSION) teardown.sh 
+	rm -rf $(PROVISION_OUTPUT) 
 
 clean: clean_untagged
 	rm -rf cloud_provision_base_image 
@@ -80,4 +108,4 @@ clean_untagged:
 	for i in `docker ps --no-trunc -a -q`;do docker rm $$i;done
 	docker images --no-trunc | grep none | awk '{print $$3}' | xargs -r docker rmi
 
-.PHONY: all echo_env check_env prep_docker build clean clean_untagged provision plan teardown
+.PHONY: all echo_env check_env prep_docker build clean clean_untagged provision plan destroy mkdirs run

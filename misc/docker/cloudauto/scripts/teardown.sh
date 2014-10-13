@@ -16,6 +16,7 @@ cd $PROGDIR
 
 # Globals could be overridden as command line arguments
 TERRAFORM_CONFIGS_DIR=/tf
+TERRAFORM_PLANS_DIR=${TERRAFORM_CONFIGS_DIR}/plans
 
 prerequisites()
 {
@@ -38,11 +39,17 @@ valid()
     echo -e "\e[0m"
     exit 1
   fi
+
+	if [ ! -d "$TERRAFORM_PLANS_DIR"  ]; then
+    echo -e "\033[31mERROR: terraform directory \"$TERRAFORM_PLANS_DIR\" does not exist.  This directory is expected to use Terraform for provisioning."
+    echo -e "\e[0m"
+    exit 1
+  fi
 }
 
 destroy()
 {
-  cd $TERRAFORM_CONFIGS_DIR && $TERRFORM_CMD plan -destroy -out=$TEARDOWN_PLAN_NAME && $TERRFORM_CMD apply $TEARDOWN_PLAN_NAME 
+  cd $TERRAFORM_CONFIGS_DIR && $TERRFORM_CMD plan -destroy -out=$TERRAFORM_PLANS_DIR/$TEARDOWN_PLAN_NAME -state=$TERRAFORM_PLANS_DIR/terraform.tfstate -refresh=true -backup=$TERRAFORM_PLANS_DIR//terraform.tfstate.backup && $TERRFORM_CMD apply -state=$TERRAFORM_PLANS_DIR/terraform.tfstate -backup=$TERRAFORM_PLANS_DIR//terraform.tfstate.backup $TERRAFORM_PLANS_DIR/$TEARDOWN_PLAN_NAME
 }
 
 main()
