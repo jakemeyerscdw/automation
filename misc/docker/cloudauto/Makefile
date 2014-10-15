@@ -10,7 +10,7 @@ all: check_env build_docker tag_latest
 
 check_env:
 ifndef DOCKER_BIN 
-   $(error DOCKER_BIN is undefined)
+   $(error Docker does not appear to be installed.  If running Linux, please install Docker.  If running Windows or OS X, please run the )
 endif
 
 prep_docker:
