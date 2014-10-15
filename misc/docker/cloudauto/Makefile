@@ -6,7 +6,7 @@ PROJECT_NAME := $(shell basename $(PWD))
 CREATE_DATE := $(shell date +%FT%T%Z)
 DOCKER_BIN := $(shell which docker)
 
-all: check_env build_docker clean
+all: check_env build_docker tag_latest 
 
 check_env:
 ifndef DOCKER_BIN 
@@ -15,11 +15,10 @@ endif
 
 prep_docker:
 	rm -rf cloud_provision_base_image
-	cp -pR templates cloud_provision_base_image
-	cp -pR scripts cloud_provision_base_image/scripts
+	cp -pR template cloud_provision_base_image
 	sed -i 's/###-->ZZZ_IMAGE<--###/$(NAME)\/$(PROJECT_NAME)/g' cloud_provision_base_image/Dockerfile
 	sed -i 's/###-->ZZZ_VERSION<--###/$(VERSION)/g' cloud_provision_base_image/Dockerfile
-	sed -i 's/###-->ZZZ_BASE_IMAGE<--###/debian:jessie/g' cloud_provision_base_image/Dockerfile
+	sed -i 's/###-->ZZZ_BASE_IMAGE<--###/jpetazzo\/dind/g' cloud_provision_base_image/Dockerfile
 	sed -i 's/###-->ZZZ_DATE<--###/$(CREATE_DATE)/g' cloud_provision_base_image/Dockerfile
 
 build_docker: prep_docker
