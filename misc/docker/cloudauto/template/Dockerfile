@@ -17,8 +17,8 @@ RUN apt-get update -y && \
             curl build-essential ca-certificates git mercurial bzr subversion \
             zip unzip vim wget rsync tree less xclip ssh \
             locales \
-            python-yaml python-jinja2 python-httplib2 python-keyczar python-paramiko python-setuptools python-pkg-resources python-pip \
-            docker.io
+            python-yaml python-jinja2 python-httplib2 python-keyczar python-paramiko python-setuptools python-pkg-resources python-pip && \
+    apt-get clean && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
 RUN locale-gen en_US.UTF-8 && \
     echo "en_US.UTF-8" >> /etc/environment && \
@@ -28,8 +28,12 @@ RUN mkdir /goroot && curl https://storage.googleapis.com/golang/go1.3.3.linux-am
 RUN mkdir /gopath && \
     mkdir -p /gopath/{'src','bin','pkg'}
 
-RUN mkdir /etc/ansible/
+RUN mkdir /etc/ansible/ && touch /etc/ansible/hosts
 RUN pip install ansible
+
+### Install some ansbile modules
+RUN ansible-galaxy install geerlingguy.firewall && \
+    ansible-galaxy install geerlingguy.ntp 
 
 ENV GOROOT /goroot
 ENV GOPATH /gopath
@@ -42,7 +46,7 @@ RUN go get -u github.com/mitchellh/gox && \
 RUN export XC_ARCH=amd64; export XC_OS=linux; cd $GOPATH/src/github.com/hashicorp/terraform; \
 	make updatedeps && make bin
 
-### make debian interactive...
+### Make Debian interactive...
 RUN env --unset=DEBIAN_FRONTEND
 
 # Add our provision & teardown scripts to the PATH

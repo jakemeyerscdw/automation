@@ -14,6 +14,8 @@ echo_env:
 	@echo Your project: $(PROJECT_NAME)
 	@echo DNSimple Email: $(DNSIMPLE_EMAIL)
 	@echo DNSimple API Key: $(DNSIMPLE_API_KEY)
+	@echo Userify API ID: $(USERIFY_API_ID)
+	@echo Userify API Key: $(USERIFY_API_KEY)
 	@echo DigitalOcean Personal Access Token: $(DO_PAT)
 	@echo ssh fingerprint: $(CLOUD_SSH_FINGERPRINT)
 
@@ -26,6 +28,12 @@ ifndef DNSIMPLE_EMAIL
 endif 
 ifndef DNSIMPLE_API_KEY 
    $(error DNSIMPLE_API_KEY is undefined)
+endif
+ifndef USERIFY_API_ID 
+   $(error USERIFY_API_ID is undefined)
+endif 
+ifndef USERIFY_API_KEY 
+   $(error USERIFY_API_KEY is undefined)
 endif
 ifndef CLOUD_SSH_KEYS_HOME 
    $(error CLOUD_SSH_KEYS_HOME is undefined)
@@ -40,9 +48,13 @@ prep_docker:
 	cp -pR terraform cloud_provision_base_image/tf
 	mkdir cloud_provision_base_image/ssh
 	cp -pR /home/pinter/.ssh/id_rsa* cloud_provision_base_image/ssh/
-	sed -i 's/### DIGITALOCEAN PAT ###/$(DO_PAT)/g' cloud_provision_base_image/tf/*.tf 
-	sed -i 's/### SSH PRIVATE KEY ###/\/root\/.ssh\/id_rsa/g' cloud_provision_base_image/tf/*.tf 
-	sed -i 's/### SSH FINGERPRINT ###/$(CLOUD_SSH_FINGERPRINT)/g' cloud_provision_base_image/tf/*.tf 
+	sed -i 's/### DIGITALOCEAN PAT ###/$(DO_PAT)/g' cloud_provision_base_image/tf/*.tf
+	sed -i 's/### SSH PRIVATE KEY ###/\/root\/.ssh\/id_rsa/g' cloud_provision_base_image/tf/*.tf
+	sed -i 's/### SSH FINGERPRINT ###/$(CLOUD_SSH_FINGERPRINT)/g' cloud_provision_base_image/tf/*.tf
+	sed -i 's/### USERIFY API ID ###/$(USERIFY_API_ID)/g' cloud_provision_base_image/tf/*.tf
+	sed -i 's/### USERIFY API KEY ###/$(USERIFY_API_KEY)/g' cloud_provision_base_image/tf/*.tf
+	sed -i 's/### DNSIMPLE EMAIL ###/$(DNSIMPLE_EMAIL)/g' cloud_provision_base_image/tf/*.tf
+	sed -i 's/### DNSIMPLE API KEY ###/$(DNSIMPLE_API_KEY)/g' cloud_provision_base_image/tf/*.tf
 
 build: prep_docker
 	$(DOCKER_BIN) build -t $(NAME)/$(PROJECT_NAME):$(VERSION) cloud_provision_base_image 
@@ -68,7 +80,7 @@ plan: mkdirs
 		-e "DNSIMPLE_EMAIL=$(DNSIMPLE_EMAIL)" \
 		-e "DNSIMPLE_API_KEY=$(DNSIMPLE_API_KEY)" \
 		-e "SSH_FINGERPRINT=$(CLOUD_SSH_FINGERPRINT)" \
-		-it $(NAME)/$(PROJECT_NAME):$(VERSION) terraform plan -state=/tf/plans/terraform.tfstate -refresh=true -backup=/tf/plans/terraform.tfstate.backup 
+		-it $(NAME)/$(PROJECT_NAME):$(VERSION) terraform get && terraform plan -state=/tf/plans/terraform.tfstate -refresh=true -backup=/tf/plans/terraform.tfstate.backup 
 
 provision: mkdirs
 	$(DOCKER_BIN) run \
@@ -89,6 +101,13 @@ ip: mkdirs
 		-e "DNSIMPLE_API_KEY=$(DNSIMPLE_API_KEY)" \
 		-e "SSH_FINGERPRINT=$(CLOUD_SSH_FINGERPRINT)" \
 		-it $(NAME)/$(PROJECT_NAME):$(VERSION) terraform output -state=/tf/plans/terraform.tfstate address
+
+droplets:
+	curl -X GET "https://api.digitalocean.com/v2/droplets" -H "Authorization: Bearer $(DO_PAT)" 
+	curl -X GET "https://api.digitalocean.com/v2/actions" -H "Authorization: Bearer $(DO_PAT)" 
+
+regions:
+	curl -X GET "https://api.digitalocean.com/v2/regions" -H "Authorization: Bearer $(DO_PAT)" | python -m json.tool
 
 destroy:
 	$(DOCKER_BIN) run \
