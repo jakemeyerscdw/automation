@@ -52,7 +52,9 @@ prep_docker:
 	sed -i 's/### SSH PRIVATE KEY ###/\/root\/.ssh\/id_rsa/g' cloud_provision_base_image/tf/*.tf
 	sed -i 's/### SSH FINGERPRINT ###/$(CLOUD_SSH_FINGERPRINT)/g' cloud_provision_base_image/tf/*.tf
 	sed -i 's/### USERIFY API ID ###/$(USERIFY_API_ID)/g' cloud_provision_base_image/tf/*.tf
+	sed -i 's/### USERIFY API ID ###/$(USERIFY_API_ID)/g' cloud_provision_base_image/tf/digitalocean/scripts/*.sh
 	sed -i 's/### USERIFY API KEY ###/$(USERIFY_API_KEY)/g' cloud_provision_base_image/tf/*.tf
+	sed -i 's/### USERIFY API KEY ###/$(USERIFY_API_KEY)/g' cloud_provision_base_image/tf/digitalocean/scripts/*.sh
 	sed -i 's/### DNSIMPLE EMAIL ###/$(DNSIMPLE_EMAIL)/g' cloud_provision_base_image/tf/*.tf
 	sed -i 's/### DNSIMPLE API KEY ###/$(DNSIMPLE_API_KEY)/g' cloud_provision_base_image/tf/*.tf
 
@@ -122,6 +124,7 @@ destroy:
 
 clean: clean_untagged
 	rm -rf cloud_provision_base_image 
+	rm -rf $(PROVISION_OUTPUT) 
 
 clean_untagged:
 	for i in `docker ps --no-trunc -a -q`;do docker rm $$i;done

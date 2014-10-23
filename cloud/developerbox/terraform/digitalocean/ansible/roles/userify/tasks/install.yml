@@ -1,0 +1,24 @@
+---
+
+- name: Install Userify
+  shell: curl -k "https://shim.userify.com/installer.sh" | api_id="{{ userify_api_id }}" api_key="{{ userify_api_key }}" sudo -sE creates=/opt/userify/shim.sh
+
+- name: Create Ansible-ized version of Userify shim.sh script
+  command: cp /opt/userify/shim.sh /opt/userify/ansible-shim.sh
+
+- name: Modify Ansible shim.sh to execute itself
+  command: sed -i "s/\/opt\/userify\/shim.sh/\/opt\/userify\/ansible-shim.sh/" /opt/userify/ansible-shim.sh 
+
+- name: Modify Ansible shim.sh to create pid file
+  shell: echo "echo \$! > /var/run/userify.pid" >> /opt/userify/ansible-shim.sh
+
+- name: Copy Userify init script into place
+  template: src=userify.j2 dest=/etc/init.d/userify owner=root group=root mode=0755
+
+- name: Ensure the userify init script is enabled and will start on boot
+  service: name=userify state=started enabled=yes
+
+- name: Remove legacy entry from rc.local entry
+  command: sed -i "s/\/opt\/userify\/shim.sh \&//" /etc/rc.local
+  notify:
+  - restart userify

@@ -1,0 +1,11 @@
+---
+# userify/handlers/main.yml
+
+- name: start userify 
+  service: name=userify state=started
+
+- name: stop userify 
+  service: name=userify state=stopped
+
+- name: restart userify 
+  service: name=userify state=restarted

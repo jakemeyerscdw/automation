@@ -35,6 +35,9 @@ RUN pip install ansible
 RUN ansible-galaxy install geerlingguy.firewall && \
     ansible-galaxy install geerlingguy.ntp 
 
+# Add ansible.cfg to $HOME 
+ADD ansible.cfg $HOME/.ansible.cfg
+
 ENV GOROOT /goroot
 ENV GOPATH /gopath
 ENV PATH $PATH:$GOROOT/bin:$GOPATH/bin
