@@ -24,7 +24,8 @@ RUN locale-gen en_US.UTF-8 && \
     echo "en_US.UTF-8" >> /etc/environment && \
     dpkg-reconfigure locales
 
-RUN mkdir /goroot && curl https://storage.googleapis.com/golang/go1.3.3.linux-amd64.tar.gz | tar xvzf - -C /goroot --strip-components=1
+ENV GO_VERSION 1.3.3
+RUN mkdir /goroot && curl https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.tar.gz | tar xvzf - -C /goroot --strip-components=1
 RUN mkdir /gopath && \
     mkdir -p /gopath/{'src','bin','pkg'}
 

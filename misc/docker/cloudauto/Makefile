@@ -1,4 +1,4 @@
-VERSION = 0.0.1
+VERSION = 0.0.2
 NAME = pinterb
 
 ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
