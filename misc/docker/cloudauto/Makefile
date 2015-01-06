@@ -25,7 +25,7 @@ build_docker: prep_docker
 	$(DOCKER_BIN) build -t $(NAME)/$(PROJECT_NAME):$(VERSION) cloud_provision_base_image 
 
 tag_latest:
-	docker tag $(NAME)/$(PROJECT_NAME):$(VERSION) $(NAME)/$(PROJECT_NAME):latest
+	docker tag -f $(NAME)/$(PROJECT_NAME):$(VERSION) $(NAME)/$(PROJECT_NAME):latest
 
 release: tag_latest
 	@if ! docker images $(NAME)/$(PROJECT_NAME) | awk '{ print $$2 }' | grep -q -F $(VERSION); then echo "$(NAME)/$(PROJECT_NAME) version $(VERSION) is not yet built. Please run 'make build'"; false; fi
