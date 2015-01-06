@@ -29,8 +29,10 @@ Some of the tools we're using or are considering for use include:
 
 ### Building this image
 Admittedly the build process for this image is a bit convoluted. But the actual steps involved are quite simple:
-* cd in this project's root directory   
-* run build.sh   
+````sh
+cd into this project's root directory   
+./build.sh   
+````
 
 Note, to run the build.sh script requires that Docker be installed.  Either natively on Linux or from [boot2docker](http://boot2docker.io) should be sufficient.
 
@@ -203,4 +205,4 @@ Ansible calls these pre-packaged units of automation [roles](http://docs.ansible
  
 
 #### NOTES   
-System generated on 2015-01-06T14:23:13+0000 
+System generated on 2015-01-06T14:26:05+0000 
