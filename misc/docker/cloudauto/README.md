@@ -1,4 +1,4 @@
-cloudauto
+pinterb/cloudauto
 ==========
 
 A [Docker](https://www.docker.com) image for acquiring, provisioning, and maintaining cloud infrastructure.
@@ -22,6 +22,21 @@ Some of the tools we're using or are considering for use include:
 * [Ansible](http://www.ansible.com/)   
 * [Jsonnet](http://google.github.io/jsonnet/doc/index.html)   
 
+
+### Using this image
+
+
+
+### Building this image
+Admittedly the build process for this image is a bit convoluted. But the actual steps involved are quite simple:
+* cd in this project's root directory   
+* run build.sh   
+
+Note, to run the build.sh script requires that Docker be installed.  Either natively on Linux or from [boot2docker](http://boot2docker.io) should be sufficient.
+
+If you're wondering why the under-the-covers build process got so wacky it's because it started out with a Makefile.  Make works fine on Linux. But on boot2docker, not so much.  So the quick
+and dirty workaround was to package up the Makefile in its own Dockerfile.  Long term, the right thing to do is merge the Makefile into the build.sh script.
+ 
 
 ### Ansible roles   
 Like most other configuration management systems, Ansible supports third-party contributions. "[Ansible Galaxy](https://galaxy.ansible.com) jump-starts your automation 
@@ -188,4 +203,4 @@ Ansible calls these pre-packaged units of automation [roles](http://docs.ansible
  
 
 #### NOTES   
-System generated on 2015-01-06T13:56:16+0000 
+System generated on 2015-01-06T14:23:13+0000 
