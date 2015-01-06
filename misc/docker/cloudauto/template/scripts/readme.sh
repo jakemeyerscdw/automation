@@ -19,7 +19,7 @@ target="/etc/ansible/roles"
 let count=0
 for f in "$target"/*
 do
-	sed -i "s/###-->ZZZ_ANSIBLE_ROLES<--###/$(basename $f)\n###-->ZZZ_ANSIBLE_ROLES<--###/g" /tmp/README.md
+	sed -i "s/###-->ZZZ_ANSIBLE_ROLES<--###/* $(basename $f)    \n###-->ZZZ_ANSIBLE_ROLES<--###/g" /tmp/README.md
 	let count=count+1
 done
 echo ""

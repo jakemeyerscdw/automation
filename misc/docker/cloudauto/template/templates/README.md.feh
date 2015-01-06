@@ -30,5 +30,5 @@ projects with great content from the Ansible community."
 Ansible calls these pre-packaged units of automation [roles](http://docs.ansible.com/playbooks_roles#roles).  This Docker image has been pre-populated with the following roles:   
 ###-->ZZZ_ANSIBLE_ROLES<--### 
 
-### NOTES   
+#### NOTES   
 ###-->ZZZ_SYSTEM_NOTE<--### 
