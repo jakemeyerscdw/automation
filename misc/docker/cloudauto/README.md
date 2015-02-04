@@ -126,6 +126,7 @@ Ansible calls these pre-packaged units of automation [roles](http://docs.ansible
 * azavea.virtualenv    
 * azavea.zookeeper    
 * bakins.datadog    
+* couchbase.couchbase-server    
 * franklinkim.htpasswd    
 * franklinkim.nginx    
 * franklinkim.openssl    
@@ -146,10 +147,19 @@ Ansible calls these pre-packaged units of automation [roles](http://docs.ansible
 * geerlingguy.nodejs    
 * geerlingguy.ntp    
 * geerlingguy.redis    
-* geerlingguy.repo-epel    
 * geerlingguy.ruby    
 * geerlingguy.security    
 * MichaelRigart.fail2ban    
+* pioho07.aerospike    
+* playlist.go    
+* playlist.nodejs    
+* playlist.nsq    
+* playlist.pm2    
+* playlist.python    
+* playlist.redis    
+* playlist.rethinkdb    
+* playlist.roshi    
+* playlist.supervisord    
 * retr0h.etcd    
 * retr0h.logrotate    
 * retr0h.nsq    
@@ -207,4 +217,4 @@ Ansible calls these pre-packaged units of automation [roles](http://docs.ansible
  
 
 #### NOTES   
-System generated on 2015-01-06T14:30:58+0000 
+System generated on 2015-02-03T19:58:36+0000 
