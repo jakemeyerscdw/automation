@@ -1,6 +1,0 @@
----
-# userify/defaults/main.yml
-
-userify_state: present
-userify_api_id: notavalidid
-userify_api_key: notavalidkey
