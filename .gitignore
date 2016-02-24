@@ -10,6 +10,7 @@ bin/
 *.backup
 *.bak
 *.orig
+*.plan
 ./*.tfstate
 .terraform/
 *.log
