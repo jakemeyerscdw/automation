@@ -1,9 +1,0 @@
----
-
-- name: Uninstall Userify
-  shell: /opt/userify/uninstall.sh removes=/opt/userify/shim.sh
-  ignore_errors: True
-
-- name: Remove Userify log file
-  file: path=/var/log/shim.log state=absent
-  ignore_errors: True
