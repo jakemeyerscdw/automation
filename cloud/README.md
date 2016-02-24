@@ -3,17 +3,17 @@ Cloud Provisioning & Configuration Management
 
 Let's build some automation around the provisioning and configuration of cloud resources.   
 
-### Introduction   
+## Introduction   
 As CDW ramps up its capabilities around all things cloud, one of the first things our 
 engineers will need to do is provision cloud infrastructure.   The scripts, templates, code, 
 etc. found here are used to automate these tasks.
 
-According to David Cappuccio, vice president and distinguished analyst at Gartner, multi-cloud 
-strategies will become common for 70 percent of organizations by 2019.  So while it will be easy 
+According to David Cappuccio, vice president and distinguished analyst at Gartner, ***multi-cloud 
+strategies will become common for 70 percent of organizations by 2019***.  So while it will be easy 
 and sometimes necessary to use tools that aren't truly multi-cloud, generally speaking these tools 
 should be avoided.
 
-### Clouds
+## Clouds
 There's great value in validating our solutions across multiple clouds.  At the same time we don't 
 want spend too much time on clouds we're not likely to ever support. The focus for now is on following 
 public cloud providers and their [IaaS](http://en.wikipedia.org/wiki/Cloud_computing#Infrastructure_as_a_service) offerings:   
@@ -23,7 +23,7 @@ public cloud providers and their [IaaS](http://en.wikipedia.org/wiki/Cloud_compu
 - [ ] [DigitalOcean](https://www.digitalocean.com/)   
 
 
-### The Toolbox  
+## The Toolbox  
 There is definitely no shortage of tools to choose from.  Honestly, the selection is a bit overwhelming.  Some 
 of the tools listed here are very cloud-specific (e.g. Azure-only).  Others pre-date the cloud (e.g. Puppet, Chef, Packer).
 
@@ -43,7 +43,7 @@ Every carpenter wants that laser-guided miter saw.  These take our solutions to 
 - [ ] [Spinnaker](http://spinnaker.io/)   
 
 #### More Basics     
-Other tools we may want to consider:
+On occasion you might need an axe or chisel.  But you already have other tools that do the job.  Some nice-to-haves:
 - [ ] [Salt](http://www.saltstack.com/)   
 - [ ] [Puppet](http://puppetlabs.com/)   
 - [ ] [Chef](https://www.getchef.com/)
