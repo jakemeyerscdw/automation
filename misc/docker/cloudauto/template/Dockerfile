@@ -27,11 +27,11 @@ RUN locale-gen en_US.UTF-8 && \
 
 ### Install Golang
 # Current version information can be found at https://golang.org/dl/
-ENV GO_VERSION 1.3.3
+ENV GO_VERSION 1.4.1
 
 RUN mkdir /goroot && curl https://storage.googleapis.com/golang/go$GO_VERSION.linux-amd64.tar.gz | tar xvzf - -C /goroot --strip-components=1
 RUN mkdir /gopath && \
-    mkdir -p /gopath/{'src','bin','pkg'}
+    mkdir /gopath/src && mkdir /gopath/bin && mkdir /gopath/pkg
 
 
 ### Install Ansible 
@@ -199,6 +199,22 @@ RUN ansible-galaxy install valentinogagliardi.collectd && \
     ansible-galaxy install valentinogagliardi.facette && \
     ansible-galaxy install MichaelRigart.fail2ban 
 
+### Install Ansbile modules (Part ??)
+# Couchbase & Aerospike 
+RUN ansible-galaxy install couchbase.couchbase-server && \
+    ansible-galaxy install pioho07.aerospike
+ 
+### Install Ansbile modules (Part ??)
+# Couchbase & Aerospike 
+RUN ansible-galaxy install playlist.go && \
+    ansible-galaxy install playlist.nodejs && \
+    ansible-galaxy install playlist.nsq && \
+    ansible-galaxy install playlist.pm2 && \
+    ansible-galaxy install playlist.python && \
+    ansible-galaxy install playlist.redis && \
+    ansible-galaxy install playlist.rethinkdb && \
+    ansible-galaxy install playlist.roshi
+
 ENV GOROOT /goroot
 ENV GOPATH /gopath
 ENV PATH $PATH:$GOROOT/bin:$GOPATH/bin
@@ -206,14 +222,12 @@ ENV PATH $PATH:$GOROOT/bin:$GOPATH/bin
 
 ### Install Terraform 
 # Current version information can be found at https://github.com/terraform/blob/master/version.go
-ENV TERRAFORM_VERSION "0.3.6 dev" 
+ENV TERRAFORM_VERSION "0.3.7 dev" 
 
-RUN go get -u github.com/mitchellh/gox && \
-    git clone https://github.com/mitchellh/goamz.git $GOPATH/src/github.com/mitchellh/goamz && \
-    git clone https://github.com/hashicorp/terraform.git $GOPATH/src/github.com/hashicorp/terraform
-
-RUN export XC_ARCH=amd64; export XC_OS=linux; cd $GOPATH/src/github.com/hashicorp/terraform; \
-	make updatedeps && make bin
+RUN git clone https://github.com/hashicorp/terraform.git $GOPATH/src/github.com/hashicorp/terraform && \
+    cd $GOPATH/src/github.com/hashicorp/terraform && \
+    make updatedeps && go get github.com/hashicorp/terraform/terraform && \ 
+    make dev
 
 
 ### Install Jsonnet
