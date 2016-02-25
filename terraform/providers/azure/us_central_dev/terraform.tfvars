@@ -2,7 +2,5 @@
 # General
 #--------------------------------------------------------------
 
-name            = "sandbox"
-region          = "West US"
-tag_env         = "development"
+name = "sandbox"
 
