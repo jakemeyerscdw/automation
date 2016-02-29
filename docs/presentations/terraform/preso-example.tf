@@ -5,7 +5,7 @@
 variable "my_domain"   { default = "cloudutils.io" }
 
 # Create a new Web droplet in the nyc2 region
-resource "digitalocean_droplet" "web" {
+resource "digitalocean_droplet" "database" {
   name = "web-1"
   image = "ubuntu-14-04-x64"
   size = "512mb"
@@ -13,10 +13,10 @@ resource "digitalocean_droplet" "web" {
 }
 
 # Add a record to the domain
-resource "dnsimple_record" "hello" {
+resource "dnsimple_record" "goodbye" {
   domain = "${var.my_domain}"
   name = "terraform"
-  value = "${digitalocean_droplet.web.ipv4_address}"
+  value = "${digitalocean_droplet.database.ipv4_address}"
   type = "A"
   ttl = 3600
 }
