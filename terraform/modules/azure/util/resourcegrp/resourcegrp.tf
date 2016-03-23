@@ -2,9 +2,9 @@
 # This module is used to create an Azure resource group 
 #--------------------------------------------------------------
 
-variable "name"   { default = "azure_default_rsrc_grp" }
-variable "location"   { default = "azure_default_rsrc_grp" }
-variable "tag_env" { default = "n/a" }
+variable "name"     { default = "azure_default_rsrc_grp" }
+variable "location" { default = "azure_default_rsrc_grp" }
+variable "tag_env"  { default = "n/a" }
 
 resource "azurerm_resource_group" "group" {
   name = "${var.name}"
@@ -15,7 +15,7 @@ resource "azurerm_resource_group" "group" {
   }
 }
 
-output "name" { value = "${azurerm_resource_group.group.name}" }
+output "id"       { value = "${azurerm_resource_group.group.id}" }
+output "name"     { value = "${azurerm_resource_group.group.name}" }
 output "location" { value = "${azurerm_resource_group.group.location}" }
-output "env" { value = "${azurerm_resource_group.group.tags.environment}" }
-output "id" { value = "${azurerm_resource_group.group.id}" }
+output "env"      { value = "${azurerm_resource_group.group.tags.environment}" }
