@@ -41,6 +41,8 @@ info:    role assignment create command OK
 
 
 ### Storage Accounts
+Another rabbit hole to avoid is naming of [storage accounts][8]: 
+
 ```bash
 Error applying plan:
 
@@ -53,6 +55,10 @@ Instead, your Terraform state file has been partially updated with any resources
 above and apply again to incrementally change your infrastructure.
 ````
 
+My incorrect assumption was that storage account names needed to be unique across your subscription.  There is a uniqueness constraint, but it's across ***all*** of Azure!
+
+
+
 [1]: https://azure.microsoft.com/en-us/
 [2]: https://www.terraform.io
 [3]: https://manage.windowsazure.com
@@ -60,3 +66,4 @@ above and apply again to incrementally change your infrastructure.
 [5]: https://azure.microsoft.com/en-us/documentation/articles/xplat-cli-install/
 [6]: https://azure.microsoft.com/en-us/documentation/articles/resource-group-authenticate-service-principal/#authenticate-with-password---azure-cli
 [7]: http://torumakabe.github.io/post/azure_tf_arm_sp/
+[8]: https://azure.microsoft.com/en-us/documentation/articles/storage-create-storage-account/
