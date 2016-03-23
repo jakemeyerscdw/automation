@@ -3,4 +3,4 @@ Azure users can quickly develop a love/hate relationship with the product offeri
 to make your experience using [Terraform][1] to manage Azure resources less painful.
 
 
-[1](https://www.terraform.io)
+[1]: https://www.terraform.io
