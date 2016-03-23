@@ -39,6 +39,20 @@ data:
 info:    role assignment create command OK
 ````
 
+
+### Storage Accounts
+```bash
+Error applying plan:
+
+1 error(s) occurred:
+
+* azurerm_storage_account.defaultsa: Error creating Azure Storage Account 'sandbox': autorest:DoErrorUnlessStatusCode 409 PUT https://management.azure.com/subscriptions/<subscription_id>/resourceGroups/sandbox-resourcegrp/providers/Microsoft.Storage/storageAccounts/sandbox?api-version=2015-06-15 failed with 409 Conflict
+
+Terraform does not automatically rollback in the face of errors.
+Instead, your Terraform state file has been partially updated with any resources that successfully completed. Please address the error
+above and apply again to incrementally change your infrastructure.
+````
+
 [1]: https://azure.microsoft.com/en-us/
 [2]: https://www.terraform.io
 [3]: https://manage.windowsazure.com
